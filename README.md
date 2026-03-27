@@ -50,3 +50,4 @@ python main.py
 - Incremental development followed  
 - Proper descriptive commit messages used  
 - Work distributed across multiple days  
+Project completed successfully.
