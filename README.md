@@ -43,7 +43,8 @@ The system follows an object-oriented architecture with an abstract base class `
 ## How to Run
 ```bash
 cd src
-python main.py
+javac Main.java
+java Main
 
 ## Git Discipline Notes
 - Minimum 10 meaningful commits maintained  
