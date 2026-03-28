@@ -1,128 +1,111 @@
-# Smart Fitness Tracker System
-from abc import ABC, abstractmethod
-import json
-import os
+import java.util.*;
 
-# =========================
-# Abstract Class
-# =========================
-class Workout(ABC):
-    def __init__(self, duration):
-        self.duration = duration
+// Abstract Class
+abstract class Workout {
+    protected int duration;
 
-    @abstractmethod
-    def calculate_calories(self):
-        pass
+    public Workout(int duration) {
+        this.duration = duration;
+    }
 
+    public abstract int calculateCalories();
+}
 
-# =========================
-# Child Classes
-# =========================
-class CardioWorkout(Workout):
-    def calculate_calories(self):
-        return self.duration * 8
+// Cardio Workout
+class CardioWorkout extends Workout {
+    public CardioWorkout(int duration) {
+        super(duration);
+    }
 
+    @Override
+    public int calculateCalories() {
+        return duration * 8;
+    }
+}
 
-class StrengthWorkout(Workout):
-    def calculate_calories(self):
-        return self.duration * 5
+// Strength Workout
+class StrengthWorkout extends Workout {
+    public StrengthWorkout(int duration) {
+        super(duration);
+    }
 
+    @Override
+    public int calculateCalories() {
+        return duration * 5;
+    }
+}
 
-# =========================
-# Fitness Tracker Class
-# =========================
-class FitnessTracker:
-    def __init__(self):
-        self.workouts = []
-        self.load_data()
+// Fitness Tracker
+class FitnessTracker {
+    private List<Workout> workouts = new ArrayList<>();
 
-    def add_workout(self, workout):
-        self.workouts.append(workout)
+    public void addWorkout(Workout workout) {
+        workouts.add(workout);
+    }
 
-    def show_summary(self):
-        if not self.workouts:
-            print("No workouts recorded yet.")
-            return
+    public void showSummary() {
+        int totalCalories = 0;
 
-        total = 0
-        print("\n--- Workout Summary ---")
+        System.out.println("\n--- Workout Summary ---");
 
-        for i, workout in enumerate(self.workouts, start=1):
-            calories = workout.calculate_calories()   # Polymorphism
-            total += calories
-            print(f"{i}. {workout.__class__.__name__} | Duration: {workout.duration} mins | Calories: {calories}")
+        for (Workout w : workouts) {
+            int calories = w.calculateCalories();
+            totalCalories += calories;
 
-        print(f"\nTotal Calories Burned: {total}")
+            System.out.println(
+                w.getClass().getSimpleName() +
+                " | Duration: " + w.duration +
+                " mins | Calories: " + calories
+            );
+        }
 
-    # =========================
-    # Data Persistence
-    # =========================
-    def save_data(self):
-        data = []
-        for w in self.workouts:
-            data.append({
-                "type": w.__class__.__name__,
-                "duration": w.duration
-            })
+        System.out.println("Total Calories Burned: " + totalCalories);
+    }
+}
 
-        with open("data.json", "w") as f:
-            json.dump(data, f)
+// Main Class
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        FitnessTracker tracker = new FitnessTracker();
 
-    def load_data(self):
-        if os.path.exists("data.json"):
-            with open("data.json", "r") as f:
-                data = json.load(f)
+        while (true) {
+            System.out.println("\n===== Smart Fitness Tracker =====");
+            System.out.println("1. Add Cardio Workout");
+            System.out.println("2. Add Strength Workout");
+            System.out.println("3. Show Summary");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
 
-                for item in data:
-                    if item["type"] == "CardioWorkout":
-                        self.workouts.append(CardioWorkout(item["duration"]))
-                    elif item["type"] == "StrengthWorkout":
-                        self.workouts.append(StrengthWorkout(item["duration"]))
+            int choice = sc.nextInt();
 
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter duration (minutes): ");
+                    int d1 = sc.nextInt();
+                    tracker.addWorkout(new CardioWorkout(d1));
+                    System.out.println("Cardio workout added!");
+                    break;
 
-# =========================
-# CLI Menu
-# =========================
-def menu():
-    tracker = FitnessTracker()
+                case 2:
+                    System.out.print("Enter duration (minutes): ");
+                    int d2 = sc.nextInt();
+                    tracker.addWorkout(new StrengthWorkout(d2));
+                    System.out.println("Strength workout added!");
+                    break;
 
-    while True:
-        print("\n===== Smart Fitness Tracker =====")
-        print("1. Add Cardio Workout")
-        print("2. Add Strength Workout")
-        print("3. Show Summary")
-        print("4. Exit")
+                case 3:
+                    tracker.showSummary();
+                    break;
 
-        choice = input("Enter your choice: ")
+                case 4:
+                    System.out.println("Exiting... Goodbye!");
+                    sc.close();
+                    return;
 
-        try:
-            if choice == "1":
-                duration = int(input("Enter duration (minutes): "))
-                tracker.add_workout(CardioWorkout(duration))
-                print("Cardio workout added!")
-
-            elif choice == "2":
-                duration = int(input("Enter duration (minutes): "))
-                tracker.add_workout(StrengthWorkout(duration))
-                print("Strength workout added!")
-
-            elif choice == "3":
-                tracker.show_summary()
-
-            elif choice == "4":
-                tracker.save_data()
-                print("Data saved successfully. Goodbye!")
-                break
-
-            else:
-                print("Invalid choice! Please try again.")
-
-        except ValueError:
-            print("Invalid input! Please enter numbers only.")
-
-
-# =========================
-# Main Entry Point
-# =========================
-if __name__ == "__main__":
-    menu()
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+    }
+}
