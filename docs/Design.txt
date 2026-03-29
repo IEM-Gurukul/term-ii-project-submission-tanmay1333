@@ -1,0 +1,15 @@
+Class: User
+Attributes: name, age, weight, height
+Methods: displayUserInfo()
+
+Class: Workout
+Attributes: workoutType, duration, caloriesBurned
+Methods: displayWorkout()
+
+Class: Diet
+Attributes: mealName, calories
+Methods: displayDiet()
+
+Class: FitnessTracker
+Attributes: user, workout, diet
+Methods: calculateBMI(), showSummary()
